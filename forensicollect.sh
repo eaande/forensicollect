@@ -20,6 +20,7 @@ hostnamectl > "$OUTDIR/host_info.txt" 2>/dev/null
 bash modules/auth_parser.sh "$OUTDIR"
 bash modules/risk_flags.sh "$OUTDIR"
 bash modules/timeline.sh "$OUTDIR"
+bash modules/summary.sh "$OUTDIR"
 
 # Evidence integrity
 sha256sum "$OUTDIR"/* > "$OUTDIR/hash_manifest.txt" 2>/dev/null
