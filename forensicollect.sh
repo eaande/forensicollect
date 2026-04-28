@@ -9,10 +9,12 @@ mkdir -p "$OUTDIR"
 
 echo "[+] Output directory: $OUTDIR"
 
-# Basic system info
-echo "[+] Collecting system info..."
+# System info
 uname -a > "$OUTDIR/system_info.txt"
 whoami > "$OUTDIR/current_user.txt"
 uptime > "$OUTDIR/uptime.txt"
+
+# Run modules
+bash modules/auth_parser.sh "$OUTDIR"
 
 echo "[+] Collection complete."
