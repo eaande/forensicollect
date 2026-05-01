@@ -20,7 +20,7 @@ echo ""
 echo "==== USERS WITH LOGIN SHELLS ===="
 awk -F: '($7 ~ /(bash|sh|zsh)$/) { print }' /etc/passwd
 
-echo ""
+echo "'
 echo "==== CURRENTLY LOGGED IN USERS ===="
 who
 
