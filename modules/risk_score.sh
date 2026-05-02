@@ -4,14 +4,45 @@ OUTDIR="$1"
 REPORT="$OUTDIR/risk_report.txt"
 SCORE=0
 
-FAILED_COUNT=$(grep -c "Failed password" "$OUTDIR/auth_events.txt" 2>/dev/null)
-ROOT_LOGIN_COUNT=$(grep -c "Accepted password for root" "$OUTDIR/auth_events.txt" 2>/dev/null)
-NEW_USER_COUNT=$(grep -Ei "new user|useradd|adduser" "$OUTDIR/auth_events.txt" 2>/dev/null | wc -l)
-SUDO_COUNT=$(grep -c "sudo:" "$OUTDIR/auth_events.txt" 2>/dev/null)
-UID0_COUNT=$(awk -F: '($3 == 0) { print }' /etc/passwd 2>/dev/null | wc -l)
-SUSPICIOUS_PORT_COUNT=$(grep -E ":(4444|5555|6666|7777|8888|9999)" "$OUTDIR/network.txt" 2>/dev/null | wc -l)
-CRON_COUNT=$(grep -Ev "^#|^$" "$OUTDIR/cron.txt" 2>/dev/null | wc -l)
+# Safe counter function (returns 0 if file missing or grep fails)
+safe_count() {
+    FILE="$1"
+    PATTERN="$2"
 
+    if [[ -f "$FILE" ]]; then
+        grep -c "$PATTERN" "$FILE" 2>/dev/null || echo 0
+    else
+        echo 0
+    fi
+}
+
+# Safe word count (for things like cron)
+safe_wc() {
+    FILE="$1"
+
+    if [[ -f "$FILE" ]]; then
+        grep -Ev "^#|^$" "$FILE" 2>/dev/null | wc -l
+    else
+        echo 0
+    fi
+}
+
+# Collect metrics safely
+FAILED_COUNT=$(safe_count "$OUTDIR/auth_events.txt" "Failed password")
+ROOT_LOGIN_COUNT=$(safe_count "$OUTDIR/auth_events.txt" "Accepted password for root")
+NEW_USER_COUNT=$(safe_count "$OUTDIR/auth_events.txt" -Ei "new user|useradd|adduser")
+SUDO_COUNT=$(safe_count "$OUTDIR/auth_events.txt" "sudo:")
+UID0_COUNT=$(awk -F: '($3 == 0) { print }' /etc/passwd 2>/dev/null | wc -l)
+
+if [[ -f "$OUTDIR/network.txt" ]]; then
+    SUSPICIOUS_PORT_COUNT=$(grep -E ":(4444|5555|6666|7777|8888|9999)" "$OUTDIR/network.txt" 2>/dev/null | wc -l)
+else
+    SUSPICIOUS_PORT_COUNT=0
+fi
+
+CRON_COUNT=$(safe_wc "$OUTDIR/cron.txt")
+
+# Scoring logic
 if [[ "$FAILED_COUNT" -gt 10 ]]; then
     SCORE=$((SCORE + 20))
 fi
@@ -40,6 +71,7 @@ if [[ "$CRON_COUNT" -gt 20 ]]; then
     SCORE=$((SCORE + 15))
 fi
 
+# Risk level
 if [[ "$SCORE" -ge 80 ]]; then
     LEVEL="HIGH"
 elif [[ "$SCORE" -ge 40 ]]; then
@@ -48,6 +80,7 @@ else
     LEVEL="LOW"
 fi
 
+# Output report
 {
 echo "==== FORENSIC RISK REPORT ===="
 echo "Generated: $(date)"
