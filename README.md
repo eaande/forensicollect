@@ -94,6 +94,7 @@ sudo ./forensicollect.sh --full
 
 ## Project Structure
 
+```text
 forensicollect/
 ├── forensicollect.sh          # Main execution script
 ├── modules/                   # Modular DFIR components
@@ -112,14 +113,17 @@ forensicollect/
 ├── .gitignore
 ├── LICENSE
 └── README.md
+```
 
 ## Installation
 
 Clone the repository and set execution permissions:
 
+```bash
 git clone https://github.com/eaande/forensicollect.git
 cd forensicollect
 chmod +x forensicollect.sh modules/*.sh
+```
 
 ## Usage
 
@@ -139,26 +143,30 @@ sudo ./forensicollect.sh --auth-only
 
 Each execution creates a timestamped case directory in the output folder:
 
+```text
 output/case_YYYYMMDD_HHMMSS/
+```
 
 Example contents include:
 
-system_info.txt           # Basic system information
-users.txt                 # User accounts and privilege data
-processes.txt             # Running processes and process tree
-network.txt               # Network configuration and connections
-network_connections.csv   # Structured network connection data
-cron.txt                  # Scheduled tasks and cron jobs
-services.txt              # Service information
-recent_files.txt          # Recently modified files
-recent_files.csv          # Structured file change data
-persistence_checks.txt    # Persistence-related findings
-auth_events.txt           # Parsed authentication events
-auth_events.csv           # Structured authentication data
-risk_report.txt           # Risk score and analysis
-hash_manifest.txt         # SHA-256 hashes of collected files
-collection_log.txt        # Execution log
-case_YYYYMMDD_HHMMSS.tar.gz   # Compressed case archive
+```text
+system_info.txt              # Basic system information
+users.txt                    # User accounts and privilege data
+processes.txt                # Running processes and process tree
+network.txt                  # Network configuration and connections
+network_connections.csv      # Structured network connection data
+cron.txt                     # Scheduled tasks and cron jobs
+services.txt                 # Service information
+recent_files.txt             # Recently modified files
+recent_files.csv             # Structured file change data
+persistence_checks.txt       # Persistence-related findings
+auth_events.txt              # Parsed authentication events
+auth_events.csv              # Structured authentication data
+risk_report.txt              # Risk score and analysis
+hash_manifest.txt            # SHA-256 hashes of collected files
+collection_log.txt           # Execution log
+case_YYYYMMDD_HHMMSS.tar.gz  # Compressed case archive
+```
 
 ## Skills Demonstrated
 
