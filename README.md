@@ -71,9 +71,127 @@ Checks common Linux persistence mechanisms:
 
 ### Command-Line Options
 
-```bash
+The tool supports multiple execution modes to control the depth of analysis:
+
+- --full  
+  Runs full system triage including all modules, risk scoring, and evidence packaging.
+
+- --quick  
+  Runs a reduced set of modules for faster analysis, including authentication, users, processes, and network data.
+
+- --auth-only  
+  Runs only authentication log parsing and risk evaluation.
+
+- --no-archive  
+  Skips creation of the compressed case archive.
+
+- --help  
+  Displays usage information and available options.
+
+### Example Usage
+
 sudo ./forensicollect.sh --full
+
+## Project Structure
+
+forensicollect/
+├── forensicollect.sh          # Main execution script
+├── modules/                   # Modular DFIR components
+│   ├── auth_parser.sh         # Authentication log analysis
+│   ├── users.sh               # User and privilege enumeration
+│   ├── processes.sh           # Process collection and analysis
+│   ├── network.sh             # Network configuration and connections
+│   ├── cron.sh                # Scheduled task collection
+│   ├── services.sh            # Service enumeration
+│   ├── files.sh               # Recently modified files
+│   ├── persistence.sh         # Persistence mechanism detection
+│   ├── risk_score.sh          # Risk evaluation logic
+│   └── package_case.sh        # Evidence packaging
+├── output/                    # Generated case data
+│   └── .gitkeep
+├── .gitignore
+├── LICENSE
+└── README.md
+
+## Installation
+
+Clone the repository and set execution permissions:
+
+git clone https://github.com/eaande/forensicollect.git
+cd forensicollect
+chmod +x forensicollect.sh modules/*.sh
+
+## Usage
+
+Run a full system triage:
+
+sudo ./forensicollect.sh --full
+
+For faster analysis:
+
 sudo ./forensicollect.sh --quick
+
+For authentication-only analysis:
+
 sudo ./forensicollect.sh --auth-only
-sudo ./forensicollect.sh --no-archive
-sudo ./forensicollect.sh --help
+
+## Output
+
+Each execution creates a timestamped case directory in the output folder:
+
+output/case_YYYYMMDD_HHMMSS/
+
+Example contents include:
+
+system_info.txt           # Basic system information
+users.txt                 # User accounts and privilege data
+processes.txt             # Running processes and process tree
+network.txt               # Network configuration and connections
+network_connections.csv   # Structured network connection data
+cron.txt                  # Scheduled tasks and cron jobs
+services.txt              # Service information
+recent_files.txt          # Recently modified files
+recent_files.csv          # Structured file change data
+persistence_checks.txt    # Persistence-related findings
+auth_events.txt           # Parsed authentication events
+auth_events.csv           # Structured authentication data
+risk_report.txt           # Risk score and analysis
+hash_manifest.txt         # SHA-256 hashes of collected files
+collection_log.txt        # Execution log
+case_YYYYMMDD_HHMMSS.tar.gz   # Compressed case archive
+
+## Skills Demonstrated
+
+- Linux system administration and command-line proficiency
+- Bash scripting and modular tool development
+- Digital forensics and incident response (DFIR) workflows
+- Authentication log analysis and event parsing
+- Persistence detection techniques on Linux systems
+- Risk-based security analysis and scoring
+- Data structuring using CSV outputs
+- Evidence integrity using SHA-256 hashing
+- Secure and organized GitHub project development
+
+## Real-World Application
+
+ForensiCollect simulates the initial phase of incident response, where analysts must quickly collect and analyze system data to identify potential security incidents.
+
+The tool supports workflows such as:
+
+- Rapid triage of potentially compromised Linux systems
+- Identification of suspicious authentication activity
+- Detection of persistence mechanisms used by attackers
+- Prioritization of investigation based on risk indicators
+- Preparation of collected evidence for further forensic analysis
+
+This approach reflects real-world DFIR practices where speed, accuracy, and structured data collection are critical during the early stages of an investigation.
+
+## Disclaimer
+
+This tool is intended for educational purposes and authorized security analysis only. Do not use this tool on systems without explicit permission.
+
+---
+
+## License
+
+This project is licensed under the MIT License.
